@@ -21,6 +21,7 @@ import {
   Mail,
   MapPin,
   Phone,
+  Flag,
   GripVertical,
   Plus,
   Trash2,
@@ -98,32 +99,15 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
 
 const App: React.FC = () => {
   const [data, setData] = useState<ResumeData>(() => {
-    // Load personal info from localStorage (except title)
-    // If no localStorage exists, use data from resumeData.ts as defaults
-    const stored = localStorage.getItem(STORAGE_KEY);
-    const personalData = stored ? JSON.parse(stored) : getDefaultPersonalInfo();
-    
-    // Load references from localStorage
-    const storedReferences = localStorage.getItem(STORAGE_KEY_REFERENCES);
-    const referencesData = storedReferences ? JSON.parse(storedReferences) : initialData.references;
-    
-    // Load languages from localStorage
-    const storedLanguages = localStorage.getItem(STORAGE_KEY_LANGUAGES);
-    const languagesData = storedLanguages ? JSON.parse(storedLanguages) : initialData.languages;
-    
-    // Load education from localStorage
-    const storedEducation = localStorage.getItem(STORAGE_KEY_EDUCATION);
-    const educationData = storedEducation ? JSON.parse(storedEducation) : initialData.education;
-    
     return {
       ...initialData,
       personal: {
-        ...personalData,
-        title: initialData.personal.title // Title always comes from JSON
+        ...initialData.personal,
+        title: initialData.personal.title
       },
-      references: referencesData,
-      languages: languagesData,
-      education: educationData
+      references: initialData.references,
+      languages: initialData.languages,
+      education: initialData.education
     };
   });
   const [jsonInput, setJsonInput] = useState<string>(JSON.stringify(initialData, null, 2));
@@ -201,16 +185,15 @@ const App: React.FC = () => {
   const handleApplyJson = () => {
     try {
       const parsed = JSON.parse(jsonInput);
-      // Only update title from JSON, keep other personal fields, references, languages, and education from local storage
       setData({
         ...parsed,
         personal: {
-          ...data.personal, // Keep existing personal data from local storage
-          title: parsed.personal?.title || data.personal.title // Only update title from JSON
+          ...data.personal,
+          title: parsed.personal?.title || data.personal.title
         },
-        references: data.references, // Keep references from local storage
-        languages: data.languages, // Keep languages from local storage
-        education: data.education // Keep education from local storage
+        references: data.references,
+        languages: data.languages,
+        education: data.education
       });
       setJsonError(null);
     } catch (e: any) {
@@ -995,7 +978,7 @@ const App: React.FC = () => {
                           placeholder="Company Inc."
                         />
                         <p className="text-[10px] text-slate-400 mt-1">
-                          💡 This is shared with your resume. Set it once in the Identity tab.
+                          This is shared with your resume. Set it once in the Identity tab.
                         </p>
                       </div>
                       <div className="space-y-1 col-span-2">
@@ -1017,7 +1000,7 @@ const App: React.FC = () => {
                       className="w-full p-4 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none min-h-[400px] leading-relaxed"
                       value={coverLetter.body}
                       onChange={(e) => updateCoverLetterField('body', e.target.value)}
-                      placeholder="Dear [Recipient Name],&#10;&#10;I am writing to express my strong interest in the [Position] role at [Company]. With [X] years of experience in [field], I am confident that my skills and background make me an excellent fit for this position.&#10;&#10;Throughout my career, I have...&#10;&#10;I am excited about the opportunity to contribute to [Company]'s mission and would welcome the chance to discuss how my experience aligns with your team's needs.&#10;&#10;Thank you for your consideration.&#10;&#10;Sincerely,&#10;[Your Name]"
+                      placeholder="Dear Hiring Manager,..."
                     />
                   </div>
                 </div>
@@ -1069,8 +1052,7 @@ const App: React.FC = () => {
         </nav>
 
         <div className="resume-viewport">
-          <article className="resume-container continuous flex flex-col text-slate-900">
-            {/* Header with Contact Info */}
+          <article className="resume-container continuous flex flex-col text-slate-900" style={{ fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif" }}>
             <header className="mb-10">
               <h1 className="text-4xl font-display text-slate-900 leading-tight mb-1 uppercase tracking-tighter">
                 {data.personal.name}
@@ -1091,7 +1073,6 @@ const App: React.FC = () => {
               <div className="h-[2px] bg-slate-900 w-full"></div>
             </header>
 
-            {/* Date and Recipient Info */}
             <div className="mb-10 space-y-6">
               <p className="text-sm text-slate-700 font-medium">{coverLetter.date}</p>
               
@@ -1105,7 +1086,6 @@ const App: React.FC = () => {
               )}
             </div>
 
-            {/* Letter Body */}
             <div className="flex-1 space-y-4 text-[14px] leading-relaxed text-slate-700">
               {coverLetter.body ? (
                 coverLetter.body.split('\n').map((paragraph, idx) => (
@@ -1124,7 +1104,6 @@ const App: React.FC = () => {
               )}
             </div>
 
-            {/* Footer with Website */}
             <div className="print-footer hidden mt-10 pt-6 border-t border-slate-100 flex justify-between items-end">
               <a 
                 href={cleanUrl(data.personal.website)} 
@@ -1206,7 +1185,11 @@ const App: React.FC = () => {
       </nav>
 
       <div className="resume-viewport">
-        <article className={`resume-container ${printVariant} flex flex-col text-slate-900`}>
+        {/* FIX 3: explicit font-family on the article ensures Unicode chars (em dash, ü, etc.) render correctly in print */}
+        <article
+          className={`resume-container ${printVariant} flex flex-col text-slate-900`}
+          style={{ fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif" }}
+        >
           {/* Main Header Block */}
           <header className="mb-7 pb-6 border-b-2 border-slate-900">
             <div className="flex justify-between items-start mb-5">
@@ -1237,6 +1220,11 @@ const App: React.FC = () => {
                 <p className="flex items-center gap-2.5 text-[11px] font-medium text-slate-600">
                   <MapPin size={12} className="text-accent" /> {data.personal.residence}
                 </p>
+                {data.personal.nationality && (
+                  <p className="flex items-center gap-2.5 text-[11px] font-medium text-slate-600">
+                    <Flag size={12} className="text-accent" /> {data.personal.nationality}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -1266,8 +1254,9 @@ const App: React.FC = () => {
                   {data.experiences.map((exp, idx) => (
                     <div key={idx} className="avoid-break">
                       <div className="flex justify-between items-baseline mb-1">
-                        <h3 className="text-lg font-display text-slate-900 uppercase tracking-tight">{exp.role}</h3>
-                        <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest">{exp.period}</span>
+                        {/* FIX 1: reduced from text-lg to text-base to stop long role titles wrapping onto a new line */}
+                        <h3 className="text-base font-display text-slate-900 uppercase tracking-tight leading-tight">{exp.role}</h3>
+                        <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest shrink-0 ml-2">{exp.period}</span>
                       </div>
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-sm font-bold text-slate-600 uppercase tracking-tight">{exp.company}</span>
@@ -1292,7 +1281,7 @@ const App: React.FC = () => {
                     <div key={idx}>
                       <div className="flex justify-between items-start mb-1">
                         <h3 className="text-md font-display text-slate-900 uppercase">{proj.title}</h3>
-                        <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest">{proj.company}</span>
+                        <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest shrink-0 ml-2">{proj.company}</span>
                       </div>
                       <p className="text-[11px] font-bold text-slate-500 italic mb-2">{proj.scope}</p>
                       <ul className="space-y-1 text-[12.5px] text-slate-600">
@@ -1303,16 +1292,16 @@ const App: React.FC = () => {
                 </div>
               </section>
 
-              {/* Education (Academic) - Main Column as requested */}
+              {/* Education */}
               <section>
                 <h2 className="text-[12px] font-mono font-black uppercase tracking-[0.3em] text-slate-900 mb-4 flex items-center gap-4">
                   Academic <div className="flex-1 h-[2px] bg-slate-900" />
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-5">
                   {data.education.map((edu, idx) => (
                     <div key={idx} className="flex justify-between items-start group">
                       <div className="space-y-0.5">
-                        <h3 className="text-lg font-display text-slate-900 leading-tight uppercase tracking-tight">{edu.degree}</h3>
+                        <h3 className="text-base font-display text-slate-900 leading-tight uppercase tracking-tight">{edu.degree}</h3>
                         <p className="text-sm font-bold text-accent uppercase tracking-wide">{edu.institution}</p>
                       </div>
                       <div className="text-right shrink-0">
@@ -1329,7 +1318,7 @@ const App: React.FC = () => {
             <aside className="col-span-4 space-y-6 border-l border-slate-50 pl-8">
               
               <section>
-                <h2 className="text-[11px] font-mono font-black uppercase tracking-[0.3em] text-slate-900 mb-4 uppercase tracking-[0.1em]">Job related abilities</h2>
+                <h2 className="text-[11px] font-mono font-black uppercase tracking-[0.3em] text-slate-900 mb-4">Job related abilities</h2>
                 <div className="space-y-5">
                   {data.abilities.map((ability, idx) => (
                     <div key={idx} className="avoid-break">
@@ -1342,17 +1331,20 @@ const App: React.FC = () => {
                 </div>
               </section>
 
-              <section>
-                <h2 className="text-[11px] font-mono font-black uppercase tracking-[0.3em] text-slate-900 mb-4">Tech Stack</h2>
-                <div className="space-y-3">
-                  {data.technicalProficiency.map((tp, idx) => (
-                    <div key={idx} className="space-y-1.5">
-                      <h4 className="text-[9px] font-mono font-black text-slate-400 uppercase tracking-widest">{tp.category}</h4>
-                      <p className="text-[12px] font-bold text-slate-700 leading-tight tracking-tight">{tp.skills}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
+              {/* FIX 2: Tech Stack only renders when array has items — removes orphan header */}
+              {data.technicalProficiency.length > 0 && (
+                <section>
+                  <h2 className="text-[11px] font-mono font-black uppercase tracking-[0.3em] text-slate-900 mb-4">Tech Stack</h2>
+                  <div className="space-y-3">
+                    {data.technicalProficiency.map((tp, idx) => (
+                      <div key={idx} className="space-y-1.5">
+                        <h4 className="text-[9px] font-mono font-black text-slate-400 uppercase tracking-widest">{tp.category}</h4>
+                        <p className="text-[12px] font-bold text-slate-700 leading-tight tracking-tight">{tp.skills}</p>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
 
               <section>
                 <h2 className="text-[11px] font-mono font-black uppercase tracking-[0.3em] text-slate-900 mb-4">Languages</h2>
@@ -1383,7 +1375,6 @@ const App: React.FC = () => {
             </aside>
           </div>
 
-          {/* New Fixed Print Footer */}
           <div className="print-footer hidden flex justify-between items-end">
             <a 
               href={cleanUrl(data.personal.website)} 
