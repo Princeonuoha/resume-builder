@@ -6,7 +6,9 @@
     <meta name="description" content="Resume Architect - High-Fidelity CV Builder">
     <title>Resume Architect | Professional CV Builder</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Calistoga&family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Figtree replaces Inter: same clean modern feel but lowercase l has a curved tail -->
+    <!-- so l and I are clearly distinct in PDF without subpixel rendering -->
+    <link href="https://fonts.googleapis.com/css2?family=Calistoga&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
@@ -20,7 +22,7 @@
               }
             },
             fontFamily: {
-              sans: ['Inter', 'system-ui', 'sans-serif'],
+              sans: ['Figtree', 'system-ui', 'sans-serif'],
               display: ['Calistoga', 'serif'],
               mono: ['JetBrains Mono', 'monospace'],
             }
@@ -40,42 +42,40 @@
             print-color-adjust: exact;
         }
 
-        /* FIX: disable ligatures on the resume itself — applies in browser preview AND print */
+        /* Disable ligatures on the resume in both browser and print */
         .resume-container * {
             font-variant-ligatures: none;
             font-feature-settings: "liga" 0, "clig" 0, "dlig" 0;
         }
 
         @media print {
-            body { 
-                background-color: white !important; 
-                margin: 0; 
-                padding: 0; 
+            body {
+                background-color: white !important;
+                margin: 0;
+                padding: 0;
             }
 
-            /* Belt-and-suspenders: also force system font during PDF export */
             * {
-                font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
+                font-family: 'Figtree', 'Helvetica Neue', Arial, sans-serif !important;
                 font-variant-ligatures: none !important;
                 font-feature-settings: "liga" 0, "clig" 0, "dlig" 0 !important;
             }
-            /* Keep Calistoga only for the name h1 */
             h1.font-display {
                 font-family: 'Calistoga', serif !important;
             }
 
             .no-print { display: none !important; }
             .print-footer { display: none !important; }
-            @page { 
-                size: A4; 
-                margin: 0; 
+            @page {
+                size: A4;
+                margin: 0;
             }
             .resume-container::before,
             .resume-container::after {
                 display: none !important;
             }
 
-            /* ==== VARIANT 1: CONTINUOUS FLOW (Default) ==== */
+            /* ==== VARIANT 1: CONTINUOUS FLOW ==== */
             .resume-container.continuous {
                 width: 100% !important;
                 margin: 0 !important;
@@ -107,15 +107,9 @@
             .resume-container.continuous section {
                 margin-bottom: 1.25rem !important;
             }
-            .resume-container.continuous .space-y-7 > * + * {
-                margin-top: 1.1rem !important;
-            }
-            .resume-container.continuous .space-y-6 > * + * {
-                margin-top: 1rem !important;
-            }
-            .resume-container.continuous .space-y-5 > * + * {
-                margin-top: 0.9rem !important;
-            }
+            .resume-container.continuous .space-y-7 > * + * { margin-top: 1.1rem !important; }
+            .resume-container.continuous .space-y-6 > * + * { margin-top: 1rem !important; }
+            .resume-container.continuous .space-y-5 > * + * { margin-top: 0.9rem !important; }
             .resume-container.continuous .avoid-break {
                 page-break-inside: avoid;
                 break-inside: avoid;
@@ -150,36 +144,23 @@
                 font-size: 0.62rem !important;
                 line-height: 1.35 !important;
             }
-            .resume-container.strict-2-page section {
-                margin-bottom: 1rem !important;
-            }
-            .resume-container.strict-2-page .space-y-7 > * + * {
-                margin-top: 0.9rem !important;
-            }
-            .resume-container.strict-2-page .space-y-6 > * + * {
-                margin-top: 0.8rem !important;
-            }
-            .resume-container.strict-2-page .space-y-5 > * + * {
-                margin-top: 0.7rem !important;
-            }
-            .resume-container.strict-2-page ul li {
-                margin-bottom: 0.2rem !important;
-            }
+            .resume-container.strict-2-page section { margin-bottom: 1rem !important; }
+            .resume-container.strict-2-page .space-y-7 > * + * { margin-top: 0.9rem !important; }
+            .resume-container.strict-2-page .space-y-6 > * + * { margin-top: 0.8rem !important; }
+            .resume-container.strict-2-page .space-y-5 > * + * { margin-top: 0.7rem !important; }
+            .resume-container.strict-2-page ul li { margin-bottom: 0.2rem !important; }
             .resume-container.strict-2-page * {
                 page-break-inside: auto !important;
                 break-inside: auto !important;
             }
 
-            /* Common rules for both variants */
             .resume-container {
                 min-height: auto !important;
                 overflow: visible !important;
                 opacity: 1 !important;
                 visibility: visible !important;
             }
-            .resume-container .grid-cols-12 {
-                display: grid !important;
-            }
+            .resume-container .grid-cols-12 { display: grid !important; }
             img {
                 display: block !important;
                 opacity: 1 !important;
