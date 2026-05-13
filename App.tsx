@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { resumeData as initialData } from './resumeData';
 import { ResumeData, PersonalInfo } from './types';
@@ -1052,7 +1051,7 @@ const App: React.FC = () => {
         </nav>
 
         <div className="resume-viewport">
-          <article className="resume-container continuous flex flex-col text-slate-900" style={{ fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif", fontVariantLigatures: "none", fontFeatureSettings: '"liga" 0, "clig" 0' }}>
+          <article className="resume-container continuous flex flex-col text-slate-900" style={{ fontFamily: "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif", fontVariantLigatures: "none", fontFeatureSettings: '"liga" 0, "clig" 0' }}>
             <header className="mb-10">
               <h1 className="text-4xl font-display text-slate-900 leading-tight mb-1 uppercase tracking-tighter">
                 {data.personal.name}
@@ -1188,7 +1187,7 @@ const App: React.FC = () => {
         {/* FIX 3: explicit font-family on the article ensures Unicode chars (em dash, ü, etc.) render correctly in print */}
         <article
           className={`resume-container ${printVariant} flex flex-col text-slate-900`}
-          style={{ fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif", fontVariantLigatures: "none", fontFeatureSettings: '"liga" 0, "clig" 0' }}
+          style={{ fontFamily: "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif", fontVariantLigatures: "none", fontFeatureSettings: '"liga" 0, "clig" 0' }}
         >
           {/* Main Header Block */}
           <header className="mb-7 pb-6 border-b-2 border-slate-900">
