@@ -1271,7 +1271,7 @@ const App: React.FC = () => {
               </section>
 
               {/* Projects Section */}
-              <section>
+              <section style={{ pageBreakBefore: 'always', breakBefore: 'page' }}>
                 <h2 className="text-[12px] font-mono font-black uppercase tracking-[0.3em] text-slate-900 mb-4 flex items-center gap-4">
                   Key Projects <div className="flex-1 h-[2px] bg-slate-900" />
                 </h2>
