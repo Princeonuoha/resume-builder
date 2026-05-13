@@ -39,6 +39,13 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
+
+        /* FIX: disable ligatures on the resume itself — applies in browser preview AND print */
+        .resume-container * {
+            font-variant-ligatures: none;
+            font-feature-settings: "liga" 0, "clig" 0, "dlig" 0;
+        }
+
         @media print {
             body { 
                 background-color: white !important; 
@@ -46,7 +53,7 @@
                 padding: 0; 
             }
 
-            /* FIX: force Inter system font + disable ligatures so l/I/fi/fl render correctly in PDF */
+            /* Belt-and-suspenders: also force system font during PDF export */
             * {
                 font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
                 font-variant-ligatures: none !important;
@@ -63,7 +70,6 @@
                 size: A4; 
                 margin: 0; 
             }
-            /* Hide page indicators when printing */
             .resume-container::before,
             .resume-container::after {
                 display: none !important;
@@ -183,6 +189,7 @@
                 color-adjust: exact !important;
             }
         }
+
         .resume-viewport {
             width: 100%;
             display: flex;
